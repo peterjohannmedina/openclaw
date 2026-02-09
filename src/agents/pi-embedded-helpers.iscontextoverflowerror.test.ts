@@ -40,6 +40,13 @@ describe("isContextOverflowError", () => {
     }
   });
 
+  it("ignores normal conversation text mentioning context overflow", () => {
+    // These are legitimate conversation snippets, not error messages
+    expect(isContextOverflowError("Let's investigate the context overflow issue")).toBe(false);
+    expect(isContextOverflowError("The mystery context overflow errors have been resolved")).toBe(false);
+    expect(isContextOverflowError("We're debugging context overflow issues in production")).toBe(false);
+  });
+
   it("ignores unrelated errors", () => {
     expect(isContextOverflowError("rate limit exceeded")).toBe(false);
     expect(isContextOverflowError("request size exceeds upload limit")).toBe(false);
