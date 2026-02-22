@@ -1,0 +1,21 @@
+{
+  "name": "@openclaw/discord-signature-middleware",
+  "version": "0.1.0",
+  "description": "Express middleware to verify Discord Ed25519 interaction signatures",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": ["discord","middleware","ed25519","signature","verify"],
+  "author": "OpenClaw",
+  "license": "MIT",
+  "dependencies": {
+    "tweetnacl": "^1.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "supertest": "^6.3.0",
+    "express": "^4.18.0"
+  }
+}
