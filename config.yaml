@@ -1,0 +1,26 @@
+plugins:
+  entries:
+    copilot-proxy:
+      enabled: true
+
+models:
+  providers:
+    ollama-pvet630:
+      type: ollama
+      baseUrl: http://192.168.1.242:11434
+      models:
+        - llama3.3:70b-instruct-q4_K_M
+        - mistral:7b-instruct
+        - codellama:70b
+        - llama3.1:8b-instruct
+
+agents:
+  defaults:
+    model:
+      primary: "copilot-proxy/gpt-5-mini"
+      fallbacks:
+        - "anthropic/claude-sonnet-4-6"
+        - "google/gemini-2.5-flash"
+
+commands:
+  restart: true

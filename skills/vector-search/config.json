@@ -1,0 +1,21 @@
+{
+  "milvus": {
+    "host": "192.168.1.220",
+    "port": 19530,
+    "timeout": 30
+  },
+  "qdrant": {
+    "host": "192.168.1.220",
+    "port": 6333,
+    "timeout": 30
+  },
+  "chromadb": {
+    "path": "~/.openclaw/chromadb",
+    "persist": true
+  },
+  "embeddings": {
+    "model": "all-MiniLM-L6-v2",
+    "device": "cpu",
+    "cache_folder": "~/.cache/huggingface"
+  }
+}

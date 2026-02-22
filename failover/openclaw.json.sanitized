@@ -1,0 +1,125 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.2.2-3",
+    "lastTouchedAt": "2026-02-07T06:05:52.771Z"
+  },
+  "env": {
+    "GEMINI_API_KEY": "xxxxxxxx"
+  },
+  "wizard": {
+    "lastRunAt": "2026-02-07T06:05:52.765Z",
+    "lastRunVersion": "2026.2.2-3",
+    "lastRunCommand": "doctor",
+    "lastRunMode": "local"
+  },
+  "models": {
+    "providers": {
+      "nvidia": {
+        "baseUrl": "https://integrate.api.nvidia.com/v1",
+        "apiKey": "xxxxxxxx",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "moonshotai/kimi-k2.5",
+            "name": "Kimi K2.5 (NVIDIA NIM)",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 262144,
+            "maxTokens": 16384
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "google/gemini-2.5-flash"
+      },
+      "models": {
+        "google/gemini-2.5-flash": {
+          "alias": "Flash"
+        },
+        "google/gemini-2.5-pro": {
+          "alias": "Pro"
+        }
+      },
+      "workspace": "/home/rm/.openclaw/workspace",
+      "compaction": {
+        "mode": "safeguard"
+      },
+      "heartbeat": {
+        "every": "90m"
+      },
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8
+      }
+    }
+  },
+  "tools": {
+    "web": {
+      "search": {
+        "apiKey": "xxxxxxxx"
+      }
+    },
+    "exec": {
+      "ask": "off"
+    }
+  },
+  "messages": {
+    "ackReactionScope": "group-mentions"
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto"
+  },
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "token": "xxxxxxxx",
+      "groupPolicy": "open"
+    }
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "lan",
+    "controlUi": {
+      "allowInsecureAuth": true,
+      "dangerouslyDisableDeviceAuth": true
+    },
+    "auth": {
+      "mode": "token",
+      "token": "xxxxxxxx"
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    },
+    "remote": {},
+    "nodes": {
+      "allowCommands": [
+        "system.run",
+        "system.which",
+        "system.execApprovals.get",
+        "system.execApprovals.set"
+      ]
+    }
+  },
+  "plugins": {
+    "entries": {
+      "discord": {
+        "enabled": true
+      }
+    }
+  }
+}

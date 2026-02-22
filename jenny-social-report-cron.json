@@ -1,0 +1,22 @@
+{
+  "id": "jenny-social-morning-report",
+  "agentId": "main",
+  "name": "Jenny's Morning Social Media Report (Lawrance & Rangoni)",
+  "enabled": true,
+  "notify": false,
+  "schedule": {
+    "kind": "cron",
+    "expr": "30 7 * * 1-5",
+    "tz": "America/Los_Angeles"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Run the social media morning report script for Jenny: /home/rm/.openclaw/workspace/social_morning_report_jenny.sh\n\nThis script fetches latest posts from Lawrance Furniture (Facebook, Instagram) and Rangoni Firenze (Instagram, TikTok, YouTube) and sends a summary report to Jenny via Discord DM (user_id: 1372233289590505524).\n\nOnce Firecrawl or ScrapeGraphAI MCP is configured with API keys, upgrade the script to fetch real post content instead of placeholder summaries.",
+    "timeoutSeconds": 300
+  },
+  "delivery": {
+    "mode": "none"
+  }
+}

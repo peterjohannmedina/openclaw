@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "mcp-execution-server": {
+      "command": "/home/rm/.openclaw/workspace/scripts/ssh-pver430.sh 'cd /root/mcp-server-code-execution-mode && MCP_BRIDGE_RUNTIME=docker MCP_BRIDGE_IMAGE=python:3.14-slim /root/.local/bin/uv run python mcp_server_code_execution_mode.py'",
+      "auth": "none"
+    },
+    "second-brain": {
+      "baseUrl": "http://192.168.1.203:3011/sse"
+    }
+  },
+  "imports": []
+}

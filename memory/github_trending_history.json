@@ -1,0 +1,212 @@
+[
+  {
+    "full_name": "openclaw/openclaw",
+    "html_url": "https://github.com/openclaw/openclaw",
+    "description": "Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞 ",
+    "stars": 215603,
+    "language": "TypeScript"
+  },
+  {
+    "full_name": "zhayujie/chatgpt-on-wechat",
+    "html_url": "https://github.com/zhayujie/chatgpt-on-wechat",
+    "description": "CowAgent是基于大模型的超级AI助理，能主动思考和任务规划、访问操作系统和外部资源、创造和执行Skills、拥有长期记忆并不断成长。同时支持飞书、钉钉、企业微信应用、微信公众号、网页等接入，可选择OpenAI/Claude/Gemini/DeepSeek/ Qwen/GLM/Kimi/LinkAI，能处理文本、语音、图片和文件，可快速搭建个人AI助手和企业数字员工。",
+    "stars": 41349,
+    "language": "Python"
+  },
+  {
+    "full_name": "CherryHQ/cherry-studio",
+    "html_url": "https://github.com/CherryHQ/cherry-studio",
+    "description": "AI productivity studio with smart chat, autonomous agents, and 300+ assistants. Unified access to frontier LLMs",
+    "stars": 39996,
+    "language": "TypeScript"
+  },
+  {
+    "full_name": "1Panel-dev/1Panel",
+    "html_url": "https://github.com/1Panel-dev/1Panel",
+    "description": "🔥 1Panel offers an intuitive web interface for a Linux server / VPS, making it easy to manage OpenClaw agents, local LLMs, websites, databases, containers, files, and scheduled tasks.",
+    "stars": 33514,
+    "language": "Go"
+  },
+  {
+    "full_name": "HKUDS/nanobot",
+    "html_url": "https://github.com/HKUDS/nanobot",
+    "description": "\"🐈 nanobot: The Ultra-Lightweight OpenClaw\"",
+    "stars": 22538,
+    "language": "Python"
+  },
+  {
+    "full_name": "VoltAgent/awesome-openclaw-skills",
+    "html_url": "https://github.com/VoltAgent/awesome-openclaw-skills",
+    "description": "The awesome collection of OpenClaw Skills. Formerly known as Moltbot, originally Clawdbot.",
+    "stars": 17580,
+    "language": null
+  },
+  {
+    "full_name": "AstrBotDevs/AstrBot",
+    "html_url": "https://github.com/AstrBotDevs/AstrBot",
+    "description": "Agentic IM Chatbot infrastructure that integrates lots of IM platforms, LLMs, plugins and AI feature, and can be your openclaw alternative. ✨",
+    "stars": 17182,
+    "language": "Python"
+  },
+  {
+    "full_name": "iOfficeAI/AionUi",
+    "html_url": "https://github.com/iOfficeAI/AionUi",
+    "description": "Free, local, open-source 24/7 Cowork app and OpenClaw for Gemini CLI, Claude Code, Codex, OpenCode, Qwen Code, Goose CLI, Auggie, and more | 🌟 Star if you like it!",
+    "stars": 16766,
+    "language": "TypeScript"
+  },
+  {
+    "full_name": "langbot-app/LangBot",
+    "html_url": "https://github.com/langbot-app/LangBot",
+    "description": "Production-grade platform for building agentic IM bots - 生产级多平台智能机器人开发平台. 提供 Agent、知识库编排、插件系统 / Bots for Discord / Slack / LINE / Telegram / WeChat(企业微信, 企微智能机器人, 公众号) / 飞书 / 钉钉 / QQ e.g. Integrated with ChatGPT(GPT), DeepSeek, Dify, n8n, Langflow, Coze, Claude, Gemini, MiniMax, Ollama, SiliconFlow, Moonshot, GLM, clawdbot / moltbot / openclaw",
+    "stars": 15322,
+    "language": "Python"
+  },
+  {
+    "full_name": "getumbrel/umbrel",
+    "html_url": "https://github.com/getumbrel/umbrel",
+    "description": "An elegant home server OS. Run OpenClaw, store your files and photos, run a Bitcoin node, and do more with over 300 apps in the Umbrel App Store.",
+    "stars": 10558,
+    "language": "TypeScript"
+  },
+  {
+    "full_name": "qwibitai/nanoclaw",
+    "html_url": "https://github.com/qwibitai/nanoclaw",
+    "description": "A lightweight alternative to Clawdbot / OpenClaw that runs in containers for security. Connects to WhatsApp, has memory, scheduled jobs, and runs directly on Anthropic's Agents SDK",
+    "stars": 10388,
+    "language": "TypeScript"
+  },
+  {
+    "full_name": "kepano/obsidian-skills",
+    "html_url": "https://github.com/kepano/obsidian-skills",
+    "description": "Agent skills for Obsidian. Teach your agent to use Markdown, Bases, JSON Canvas, and use the CLI.",
+    "stars": 10253,
+    "language": null
+  },
+  {
+    "full_name": "NevaMind-AI/memU",
+    "html_url": "https://github.com/NevaMind-AI/memU",
+    "description": "Memory for 24/7 proactive agents like openclaw (moltbot, clawdbot).",
+    "stars": 9636,
+    "language": "Python"
+  },
+  {
+    "full_name": "mcp-use/mcp-use",
+    "html_url": "https://github.com/mcp-use/mcp-use",
+    "description": "The fullstack MCP framework to develop MCP Apps for ChatGPT / Claude & MCP Servers for AI Agents.",
+    "stars": 9222,
+    "language": "TypeScript"
+  },
+  {
+    "full_name": "cloudflare/moltworker",
+    "html_url": "https://github.com/cloudflare/moltworker",
+    "description": "Run OpenClaw, (formerly Moltbot, formerly Clawdbot) on Cloudflare Workers",
+    "stars": 9030,
+    "language": "TypeScript"
+  },
+  {
+    "full_name": "MemTensor/MemOS",
+    "html_url": "https://github.com/MemTensor/MemOS",
+    "description": "AI memory OS for LLM and Agent systems(moltbot,clawdbot,openclaw), enabling persistent Skill memory for cross-task skill reuse and evolution.",
+    "stars": 5715,
+    "language": "Python"
+  },
+  {
+    "full_name": "hesamsheikh/awesome-openclaw-usecases",
+    "html_url": "https://github.com/hesamsheikh/awesome-openclaw-usecases",
+    "description": "A community collection of OpenClaw use cases for making life easier.",
+    "stars": 4987,
+    "language": null
+  },
+  {
+    "full_name": "HKUDS/ClawWork",
+    "html_url": "https://github.com/HKUDS/ClawWork",
+    "description": "\"ClawWork: OpenClaw as Your AI Coworker - 💰 $10K earned in 7 Hours\"",
+    "stars": 4751,
+    "language": "Python"
+  },
+  {
+    "full_name": "mnfst/manifest",
+    "html_url": "https://github.com/mnfst/manifest",
+    "description": "Real-time cost observability for your OpenClaw agents.",
+    "stars": 3318,
+    "language": "TypeScript"
+  },
+  {
+    "full_name": "BlockRunAI/ClawRouter",
+    "html_url": "https://github.com/BlockRunAI/ClawRouter",
+    "description": "The agent-native LLM router empowering OpenClaw — by BlockRunAI",
+    "stars": 3158,
+    "language": "TypeScript"
+  },
+  {
+    "full_name": "Tencent/AI-Infra-Guard",
+    "html_url": "https://github.com/Tencent/AI-Infra-Guard",
+    "description": "A.I.G (AI-Infra-Guard) is a full-stack AI Red Teaming platform developed by Tencent Zhuque Lab that secures your AI ecosystem from infrastructure to agents.",
+    "stars": 2971,
+    "language": "Python"
+  },
+  {
+    "full_name": "badrisnarayanan/antigravity-claude-proxy",
+    "html_url": "https://github.com/badrisnarayanan/antigravity-claude-proxy",
+    "description": "Proxy that exposes Antigravity provided claude / gemini models, so we can use them in Claude Code and OpenClaw (Clawdbot)",
+    "stars": 2866,
+    "language": "JavaScript"
+  },
+  {
+    "full_name": "memovai/mimiclaw",
+    "html_url": "https://github.com/memovai/mimiclaw",
+    "description": "MimiClaw: Run OpenClaw on a $5 chip. No OS(Linux). No Node.js. No Mac mini. No Raspberry Pi. No VPS.😗Local-first memory. Shareable. Portable. Privacy-first. Smarter than PicoClaw.",
+    "stars": 2810,
+    "language": "C"
+  },
+  {
+    "full_name": "nearai/ironclaw",
+    "html_url": "https://github.com/nearai/ironclaw",
+    "description": "IronClaw is OpenClaw inspired implementation in Rust focused on privacy and security",
+    "stars": 2626,
+    "language": "Rust"
+  },
+  {
+    "full_name": "openclaw/clawhub",
+    "html_url": "https://github.com/openclaw/clawhub",
+    "description": "Skill Directory for OpenClaw",
+    "stars": 2489,
+    "language": "TypeScript"
+  },
+  {
+    "full_name": "davepoon/buildwithclaude",
+    "html_url": "https://github.com/davepoon/buildwithclaude",
+    "description": "A single hub to find Claude Skills, Agents, Commands, Hooks, Plugins, and Marketplace collections to extend Claude Code, Claude Desktop, Agent SDK and OpenClaw",
+    "stars": 2459,
+    "language": "TypeScript"
+  },
+  {
+    "full_name": "miaoxworld/OpenClawInstaller",
+    "html_url": "https://github.com/miaoxworld/OpenClawInstaller",
+    "description": "ClawdBot 一键部署工具",
+    "stars": 1879,
+    "language": "Shell"
+  },
+  {
+    "full_name": "justlovemaki/OpenClaw-Docker-CN-IM",
+    "html_url": "https://github.com/justlovemaki/OpenClaw-Docker-CN-IM",
+    "description": "OpenClaw 的中国IM平台整合Docker版本，预装并配置了飞书、钉钉、QQ机器人、企业微信等主流中国IM软件的插件，让您可以快速部署一个支持多个中国IM平台的 AI 机器人网关",
+    "stars": 1746,
+    "language": "Shell"
+  },
+  {
+    "full_name": "SumeLabs/clawra",
+    "html_url": "https://github.com/SumeLabs/clawra",
+    "description": "Clawra - Openclaw as your girlfriend",
+    "stars": 1582,
+    "language": "TypeScript"
+  },
+  {
+    "full_name": "ComposioHQ/secure-openclaw",
+    "html_url": "https://github.com/ComposioHQ/secure-openclaw",
+    "description": "A personal 24x7 AI assistant like OpenClaw that runs on your messaging platforms. Send a message on WhatsApp, Telegram, Signal, or iMessage and get responses from Claude with full tool access, persistent memory, scheduled reminders, and integrations with 500+ apps.",
+    "stars": 1510,
+    "language": "JavaScript"
+  }
+]
