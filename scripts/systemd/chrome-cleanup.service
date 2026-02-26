@@ -1,0 +1,14 @@
+[Unit]
+Description=OpenClaw Chrome Browser Cleanup Daemon
+Documentation=file:///home/rm/.openclaw/workspace/projects/chrome-cleanup-pr/CLAUDE.md
+After=openclaw-gateway.service
+
+[Service]
+Type=simple
+ExecStart=/home/rm/.openclaw/browser/chrome-cleanup.sh daemon
+Restart=on-failure
+RestartSec=10
+Environment=HOME=/home/rm
+
+[Install]
+WantedBy=default.target
