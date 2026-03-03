@@ -9,6 +9,7 @@ import {
 } from "../config/sessions.js";
 import { callGateway } from "../gateway/call.js";
 import { onAgentEvent } from "../infra/agent-events.js";
+import { enqueueSystemEvent } from "../infra/system-events.js";
 import { defaultRuntime } from "../runtime.js";
 import { type DeliveryContext, normalizeDeliveryContext } from "../utils/delivery-context.js";
 import { resetAnnounceQueuesForTests } from "./subagent-announce-queue.js";
@@ -301,6 +302,51 @@ function shouldEmitEndedHookForRun(params: {
   return !shouldKeepThreadBindingAfterRun(params);
 }
 
+/**
+ * Classify an error message into provider error categories for telemetry.
+ */
+function classifyProviderError(error: string): "cooldown" | "auth" | "rate_limit" | "unknown" {
+  const lower = error.toLowerCase();
+  if (lower.includes("cooldown") || lower.includes("unavailable")) {
+    return "cooldown";
+  }
+  if (lower.includes("auth") || lower.includes("api key") || lower.includes("credential")) {
+    return "auth";
+  }
+  if (
+    lower.includes("rate limit") ||
+    lower.includes("rate_limit") ||
+    lower.includes("too many requests")
+  ) {
+    return "rate_limit";
+  }
+  return "unknown";
+}
+
+/**
+ * Build a human-readable system event text for subagent provider errors.
+ * These events are picked up by heartbeat to surface failures between intervals.
+ */
+function buildSubagentErrorSystemEvent(params: {
+  runId: string;
+  task: string;
+  model?: string;
+  error: string;
+  providerErrorHint: "cooldown" | "auth" | "rate_limit" | "unknown";
+}): string {
+  const modelHint = params.model ? ` (model: ${params.model})` : "";
+  const taskPreview = params.task.length > 60 ? `${params.task.slice(0, 60)}...` : params.task;
+  const categoryLabel =
+    params.providerErrorHint === "cooldown"
+      ? "[provider cooldown]"
+      : params.providerErrorHint === "auth"
+        ? "[auth failed]"
+        : params.providerErrorHint === "rate_limit"
+          ? "[rate limited]"
+          : "[provider error]";
+  return `Subagent failed${modelHint}: ${categoryLabel} ${taskPreview}`;
+}
+
 async function emitSubagentEndedHookForRun(params: {
   entry: SubagentRunRecord;
   reason?: SubagentLifecycleEndedReason;
@@ -310,6 +356,25 @@ async function emitSubagentEndedHookForRun(params: {
   const reason = params.reason ?? params.entry.endedReason ?? SUBAGENT_ENDED_REASON_COMPLETE;
   const outcome = resolveLifecycleOutcomeFromRunOutcome(params.entry.outcome);
   const error = params.entry.outcome?.status === "error" ? params.entry.outcome.error : undefined;
+
+  // Enqueue system event for heartbeat visibility when subagent fails.
+  // This ensures provider errors (cooldown, auth, rate limits) are surfaced
+  // even if the parent session doesn't check results before next heartbeat.
+  if (error && params.entry.requesterSessionKey) {
+    const providerErrorHint = classifyProviderError(error);
+    const eventText = buildSubagentErrorSystemEvent({
+      runId: params.entry.runId,
+      task: params.entry.task,
+      model: params.entry.model,
+      error,
+      providerErrorHint,
+    });
+    enqueueSystemEvent(eventText, {
+      sessionKey: params.entry.requesterSessionKey,
+      contextKey: `subagent:${params.entry.runId}`,
+    });
+  }
+
   await emitSubagentEndedHookOnce({
     entry: params.entry,
     reason,
