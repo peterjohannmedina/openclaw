@@ -12,6 +12,7 @@ import { formatCliCommand } from "../cli/command-format.js";
 import type { OpenClawConfig } from "../config/config.js";
 import { CONFIG_PATH, readConfigFileSnapshot, writeConfigFile } from "../config/config.js";
 import { logConfigUpdated } from "../config/logging.js";
+import { resolveConfigPath, resolveStateDir } from "../config/paths.js";
 import { resolveGatewayService } from "../daemon/service.js";
 import { resolveGatewayAuth } from "../gateway/auth.js";
 import { buildGatewayConnectionDetails } from "../gateway/call.js";
@@ -195,6 +196,7 @@ export async function doctorCommand(
   cfg = await maybeRepairSandboxImages(cfg, runtime, prompter);
   noteSandboxScopeWarnings(cfg);
 
+  await noteConfigPathMismatch({ cfg, prompter, runtime });
   await maybeScanExtraGatewayServices(options, runtime, prompter);
   await maybeRepairGatewayServiceConfig(cfg, resolveMode(cfg), runtime, prompter);
   await noteMacLaunchAgentOverrides();
@@ -330,4 +332,95 @@ export async function doctorCommand(
   }
 
   outro("Doctor complete.");
+}
+
+/**
+ * Detect and optionally remediate a config path mismatch between the CLI process
+ * and the running gateway daemon.
+ *
+ * A mismatch occurs when the daemon was started with a different OPENCLAW_CONFIG_PATH,
+ * OPENCLAW_STATE_DIR, or HOME than the CLI is using now. When this happens:
+ * - `openclaw config set` writes to the CLI path
+ * - The gateway reads from (and watches) its own path
+ * - Changes written by the CLI — including model failover and auth-key rotation —
+ *   are invisible to the running daemon for its entire lifetime
+ *
+ * Fix: update the daemon service unit to export OPENCLAW_CONFIG_PATH pointing at
+ * the CLI's resolved path, then prompt the user to restart the daemon.
+ */
+async function noteConfigPathMismatch(params: {
+  cfg: OpenClawConfig;
+  prompter: ReturnType<typeof createDoctorPrompter>;
+  runtime: RuntimeEnv;
+}): Promise<void> {
+  const { prompter, runtime } = params;
+
+  const cliConfigPath = resolveConfigPath(process.env, resolveStateDir(process.env));
+
+  // Try to detect the daemon's config path via its service environment.
+  // resolveGatewayService reads the installed unit (launchd plist / systemd unit)
+  // and exposes the env it was started with.
+  let daemonConfigPath: string | null = null;
+  try {
+    const svc = resolveGatewayService();
+    if (svc?.env) {
+      const env = svc.env as NodeJS.ProcessEnv;
+      const candidate = resolveConfigPath(env, resolveStateDir(env));
+      if (candidate && candidate !== cliConfigPath) {
+        daemonConfigPath = candidate;
+      }
+    }
+  } catch {
+    // Service not installed or not readable — nothing to check
+    return;
+  }
+
+  if (!daemonConfigPath) {
+    return; // Paths match or daemon not installed
+  }
+
+  // Verify both paths actually exist so the note is actionable
+  const daemonCfgExists = fs.existsSync(daemonConfigPath);
+
+  const lines = [
+    `CLI config:    ${shortenHomePath(cliConfigPath)}`,
+    `Daemon config: ${shortenHomePath(daemonConfigPath)}${daemonCfgExists ? "" : " (missing)"}`,
+    "",
+    "The gateway daemon is reading a different config file than the CLI is writing to.",
+    "Changes made with `openclaw config set`, `openclaw failover`, or `openclaw auth`",
+    "will NOT take effect in the running gateway until this is fixed.",
+  ];
+  note(lines.join("\n"), "Config path mismatch ⚠️");
+
+  const shouldFix =
+    prompter.shouldRepair ||
+    (await prompter.confirmRepair({
+      message: `Update the daemon service to use ${shortenHomePath(cliConfigPath)} and restart?`,
+      initialValue: true,
+    }));
+
+  if (!shouldFix) {
+    runtime.log(
+      `Manual fix: add OPENCLAW_CONFIG_PATH=${cliConfigPath} to your daemon service environment and restart.`,
+    );
+    return;
+  }
+
+  try {
+    const { updateGatewayServiceEnv } = await import("./doctor-service-env.js");
+    await updateGatewayServiceEnv({
+      envKey: "OPENCLAW_CONFIG_PATH",
+      envValue: cliConfigPath,
+      runtime,
+    });
+    note(
+      `Daemon service updated to use ${shortenHomePath(cliConfigPath)}.\nRestart the gateway to apply: openclaw gateway restart`,
+      "Config path fixed",
+    );
+  } catch (err) {
+    runtime.error(
+      `Could not update service automatically: ${String(err)}\n` +
+        `Manual fix: add OPENCLAW_CONFIG_PATH=${cliConfigPath} to your daemon service environment and restart.`,
+    );
+  }
 }

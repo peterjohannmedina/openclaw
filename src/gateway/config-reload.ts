@@ -74,12 +74,16 @@ export function startGatewayConfigReloader(opts: {
   readSnapshot: () => Promise<ConfigFileSnapshot>;
   onHotReload: (plan: GatewayReloadPlan, nextConfig: OpenClawConfig) => Promise<void>;
   onRestart: (plan: GatewayReloadPlan, nextConfig: OpenClawConfig) => void | Promise<void>;
+  /** Called when auth-profiles.json changes on disk so the runtime snapshot can be refreshed. */
+  onAuthStoreChange?: () => Promise<void>;
   log: {
     info: (msg: string) => void;
     warn: (msg: string) => void;
     error: (msg: string) => void;
   };
   watchPath: string;
+  /** Additional paths to watch (e.g. auth-profiles.json per agent dir). */
+  watchAuthPaths?: string[];
 }): GatewayConfigReloader {
   let currentConfig = opts.initialConfig;
   let settings = resolveGatewayReloadSettings(currentConfig);
@@ -233,6 +237,48 @@ export function startGatewayConfigReloader(opts: {
     void watcher.close().catch(() => {});
   });
 
+  // Auth-profile watcher: watches auth-profiles.json for each known agent dir.
+  // When the file changes (e.g. clearAuthProfileCooldown, key rotation, external
+  // write), we refresh the runtime auth-store snapshots without a full config
+  // reload. This ensures cooldown resets written by `openclaw failover` or
+  // `openclaw auth` are picked up by the running gateway immediately.
+  let authWatcher: ReturnType<typeof chokidar.watch> | null = null;
+  if (opts.watchAuthPaths?.length && opts.onAuthStoreChange) {
+    const onAuthStoreChange = opts.onAuthStoreChange;
+    let authDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const scheduleAuthReload = () => {
+      if (stopped) {
+        return;
+      }
+      if (authDebounceTimer) {
+        clearTimeout(authDebounceTimer);
+      }
+      authDebounceTimer = setTimeout(() => {
+        void onAuthStoreChange().catch((err) => {
+          opts.log.error(`auth-store reload failed: ${String(err)}`);
+        });
+      }, settings.debounceMs);
+    };
+
+    authWatcher = chokidar.watch(opts.watchAuthPaths, {
+      ignoreInitial: true,
+      awaitWriteFinish: { stabilityThreshold: 200, pollInterval: 50 },
+      usePolling: Boolean(process.env.VITEST),
+    });
+    authWatcher.on("add", () => {
+      opts.log.info("auth-profile store added; refreshing runtime snapshot");
+      scheduleAuthReload();
+    });
+    authWatcher.on("change", () => {
+      opts.log.info("auth-profile store changed; refreshing runtime snapshot");
+      scheduleAuthReload();
+    });
+    authWatcher.on("error", (err) => {
+      opts.log.warn(`auth-profile watcher error: ${String(err)}`);
+    });
+  }
+
   return {
     stop: async () => {
       stopped = true;
@@ -241,7 +287,7 @@ export function startGatewayConfigReloader(opts: {
       }
       debounceTimer = null;
       watcherClosed = true;
-      await watcher.close().catch(() => {});
+      await Promise.all([watcher.close().catch(() => {}), authWatcher?.close().catch(() => {})]);
     },
   };
 }

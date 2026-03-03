@@ -1,5 +1,11 @@
 import path from "node:path";
-import { resolveAgentWorkspaceDir, resolveDefaultAgentId } from "../agents/agent-scope.js";
+import {
+  resolveAgentWorkspaceDir,
+  resolveDefaultAgentId,
+  listAgentIds,
+  resolveAgentDir,
+} from "../agents/agent-scope.js";
+import { resolveAuthStorePath } from "../agents/auth-profiles/paths.js";
 import { getActiveEmbeddedRunCount } from "../agents/pi-embedded-runner/runs.js";
 import { registerSkillsChangeListener } from "../agents/skills/refresh.js";
 import { initSubagentRegistry } from "../agents/subagent-registry.js";
@@ -939,6 +945,30 @@ export async function startGatewayServer(
             error: (msg) => logReload.error(msg),
           },
           watchPath: CONFIG_PATH,
+          // Watch auth-profiles.json for each agent dir so cooldown resets,
+          // key rotations, and external credential changes are picked up
+          // immediately without requiring a gateway restart.
+          watchAuthPaths: [
+            resolveAuthStorePath(),
+            ...listAgentIds(cfgAtStart).map((agentId) =>
+              resolveAuthStorePath(resolveAgentDir(cfgAtStart, agentId)),
+            ),
+          ].filter((v, i, arr) => arr.indexOf(v) === i), // dedupe
+          onAuthStoreChange: async () => {
+            const previousSnapshot = getActiveSecretsRuntimeSnapshot();
+            try {
+              logReload.info("auth-profile store changed; refreshing runtime secrets snapshot");
+              await activateRuntimeSecrets(previousSnapshot?.sourceConfig ?? cfgAtStart, {
+                reason: "reload",
+                activate: true,
+              });
+            } catch (err) {
+              logReload.error(`auth-store refresh failed: ${String(err)}`);
+              if (previousSnapshot) {
+                activateSecretsRuntimeSnapshot(previousSnapshot);
+              }
+            }
+          },
         });
       })();
 
