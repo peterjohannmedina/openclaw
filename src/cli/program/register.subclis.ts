@@ -92,6 +92,15 @@ const entries: SubCliEntry[] = [
     },
   },
   {
+    name: "failover",
+    description: "Probe model availability and switch default or session model on failure",
+    hasSubcommands: true,
+    register: async (program) => {
+      const mod = await import("../failover-cli.js");
+      mod.registerFailoverCli(program);
+    },
+  },
+  {
     name: "approvals",
     description: "Manage exec approvals (gateway or node host)",
     hasSubcommands: true,
