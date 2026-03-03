@@ -16,18 +16,28 @@ export function registerFailoverCli(program: Command) {
     .addHelpText(
       "after",
       () =>
-        `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/failover", "docs.openclaw.ai/cli/failover")}\n`,
+        `\n${theme.muted("Note:")} The runtime fallback system handles transient failures automatically during active sessions.\nUse this command for permanent config-level recovery when the gateway is stopped or a provider is permanently unavailable.\n\n${theme.muted("Docs:")} ${formatDocsLink("/cli/failover", "docs.openclaw.ai/cli/failover")}\n`,
     );
 
-  // ── failover default ──
+  // ── failover default ──────────────────────────────────────────────────────
   failover
     .command("default")
     .description("Probe candidates and update the global default model")
     .requiredOption(
       "-m, --models <list>",
-      "Comma-separated provider/model candidates in priority order (e.g. openai/gpt-4o,anthropic/claude-opus-4-6)",
+      "Comma-separated provider/model candidates in priority order\n(e.g. openai/gpt-4o,anthropic/claude-opus-4-6)",
     )
     .option("-t, --timeout <ms>", "Per-probe timeout in milliseconds", "5000")
+    .option(
+      "--demote",
+      "Move the old primary to the end of fallbacks[] instead of leaving it in place",
+      false,
+    )
+    .option(
+      "--reset-cooldown",
+      "Clear auth-profile cooldown timers for the old provider so the runtime picks up the new primary immediately",
+      false,
+    )
     .option("--dry-run", "Print what would change without writing", false)
     .option("--json", "Output result as JSON", false)
     .action((opts) =>
@@ -35,13 +45,15 @@ export function registerFailoverCli(program: Command) {
         failoverDefaultModelCommand({
           models: opts.models,
           timeout: Number(opts.timeout),
+          demote: opts.demote,
+          resetCooldown: opts.resetCooldown,
           dryRun: opts.dryRun,
           json: opts.json,
         }),
       ),
     );
 
-  // ── failover session ──
+  // ── failover session ──────────────────────────────────────────────────────
   failover
     .command("session")
     .description("Probe candidates and apply a model override to a specific session")
