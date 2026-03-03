@@ -1,15 +1,13 @@
-import { resolveOpenClawAgentDir } from "../../agents/agent-paths.js";
-import { resolveDefaultAgentId } from "../../agents/agent-scope.js";
-import { parseModelRef } from "../../agents/model-selection.js";
-import { readConfigFileSnapshot, writeConfigFile } from "../../config/config.js";
-import { resolveSessionStorePath } from "../../config/sessions/paths.js";
-import { updateSessionStoreEntry } from "../../config/sessions/store.js";
-import type { SessionEntry } from "../../config/sessions/types.js";
-import type { RuntimeEnv } from "../../runtime.js";
-import { defaultRuntime } from "../../runtime.js";
-import { applyModelOverrideToSessionEntry } from "../../sessions/model-overrides.js";
-import { theme } from "../../terminal/theme.js";
-import { applyDefaultModelPrimaryUpdate } from "./shared.js";
+import { parseModelRef } from "../agents/model-selection.js";
+import { readConfigFileSnapshot, writeConfigFile } from "../config/config.js";
+import { resolveStorePath } from "../config/sessions/paths.js";
+import { updateSessionStoreEntry } from "../config/sessions/store.js";
+import type { SessionEntry } from "../config/sessions/types.js";
+import type { RuntimeEnv } from "../runtime.js";
+import { defaultRuntime } from "../runtime.js";
+import { applyModelOverrideToSessionEntry } from "../sessions/model-overrides.js";
+import { theme } from "../terminal/theme.js";
+import { applyDefaultModelPrimaryUpdate } from "./models/shared.js";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -231,11 +229,8 @@ export async function failoverSessionModel(
   }
 
   const timeoutMs = opts.timeout ?? 5000;
-  const agentDir = resolveOpenClawAgentDir(
-    process.env.OPENCLAW_AGENT_DIR ?? process.env.PI_CODING_AGENT_DIR,
-    await resolveDefaultAgentId(),
-  );
-  const storePath = resolveSessionStorePath(agentDir);
+  const snapshot = await readConfigFileSnapshot();
+  const storePath = resolveStorePath(snapshot.parsed.session?.store);
 
   runtime.log(
     `Probing ${candidates.length} candidate(s) for session ${opts.sessionKey} (timeout=${timeoutMs}ms)${opts.dryRun ? " [dry-run]" : ""}`,
